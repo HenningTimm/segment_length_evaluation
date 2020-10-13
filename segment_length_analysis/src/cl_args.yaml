@@ -43,5 +43,5 @@ args:
       help: "If set, canonical q-grams are computed from raw q-grams, not their hash values."
   - write-minimizers:
       long: "write-minimizers"
-      help: "If set, write minimizers to given file"
+      help: "If set, write minimizers to given file. Note that this option requires several GB of free disk space."
   
