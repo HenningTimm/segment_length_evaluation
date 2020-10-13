@@ -1,0 +1,17 @@
+[package]
+name = "segment_length_analysis"
+version = "0.2.0"
+authors = ["Henning Timm <henning.timm@tu-dortmund.de>"]
+edition = "2018"
+
+[dependencies]
+clap = { version = "2.31.2", features = ["yaml"] }
+needletail = "0.1.0"
+itertools = "*"
+counter = "0.3.0"
+rand = "0.7.3"
+tab-hash = "0.2.1"
+color-backtrace = "0.2.3"
+mod_exp = "1.0.1"
+serde = { version = "1.0.104", features = ["derive"] }
+murmur3 = "0.5.1"

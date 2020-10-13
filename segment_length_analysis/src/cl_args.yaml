@@ -1,0 +1,47 @@
+name: segment_length_analysis
+version: "0.2"
+about: "Analyze distribution of winnowing segment length"
+author: "Henning Timm <henning.timm@tu-dortmund.de>"
+
+args:
+  - fasta-path:
+      index: 1
+      required: true
+      help: "The FASTA file to be analyzed."
+  - seg-len-path:
+      index: 2
+      required: true
+      help: "Target output file for segment lengths."
+  - minimizer-path:
+      index: 3
+      required: true
+      help: "Target output file for minimizers."
+  - q:
+      short: q
+      long: "q-gram-length"
+      default_value: "32"
+      help: "Length of analyzed q-grams. 0 < q <= 32"
+  - w:
+      short: w
+      long: "window-length"
+      default_value: "100"
+      help: "Length of analyzed windows."
+  - mixing:
+      short: m
+      long: "hash-mixing"
+      default_value: "2bit"
+      possible_values: ["2bit", "swap", "fmix", "mmh3", "hlin", "tab64simple", "tab64twisted", "inv-mult", "tab-reduced"]
+      help: "Hash function that will be applied. "
+  - canonical:
+      short: c
+      long: "canonical"
+      default_value: "non"
+      possible_values: ["non", "min", "max"]
+      help: "Canonical q-grams? If so, min or max?"
+  - canonisize-qgrams:
+      long: "canonisize-qgrams"
+      help: "If set, canonical q-grams are computed from raw q-grams, not their hash values."
+  - write-minimizers:
+      long: "write-minimizers"
+      help: "If set, write minimizers to given file"
+  
