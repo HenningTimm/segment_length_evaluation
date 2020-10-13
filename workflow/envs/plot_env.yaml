@@ -1,0 +1,16 @@
+name: plot_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+  
+dependencies:
+  - python >= 3.6
+  - matplotlib
+  - seaborn
+  - click
+  - pillow
+  - pandas =0.25.1
+  - scipy
+  - pip:
+      - colorbrewer

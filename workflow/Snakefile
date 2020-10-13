@@ -1,0 +1,127 @@
+""" This workflow generates the visualizations for the Segment Length Distribution chapter of my PhD thesis.
+
+Analysis workflow outline:
+
+* Create random DNA sequences with known GC content for simulated genome analysis
+* Download reference genomes
+* Run analysis on FASTA file to produce count files using different combinations
+  of hash functions and canonization strategies.
+* Aggregate count files for simulated genomes.
+* Compute predicted segmented length distributions
+* Visualize results.
+"""
+import glob
+import pandas as pd
+import itertools
+
+configfile: "config.yaml"
+
+
+## get name to path mapping from file
+genomes = pd.read_csv(config["genomes_file"], sep="\t", comment="#", dtype=str)
+g = {name: {"path": path, "download_link": download_link} for name, path, download_link in zip(genomes["name"], genomes["path"], genomes["download_link"])}
+
+# Assemble path to folder where simulated genomes are stored.
+tmp_prefix = config["tmp_prefix"]
+simulation_prefix = f"{tmp_prefix}/simulated_genomes"
+
+# Assign a shorter name to analysis_parameters to
+# make them easier usable in commands.
+aps = config['analysis_parameters']
+
+rule all:
+    input:
+        # GC content overview plots
+        # These facet plots show segment lengths distributions for simulated genomes
+        # versus the predicted distribution. GC content values as specified in
+        # the gc_content_range varibale in the config file are shown in rows,
+        # combinations of canonization strategy and hash functions are shown
+        # in columns (same canonization highlighted in the same color).
+        # The combinations of hash functions and canonization strategies is specified
+        # in the plotting rule in the file plotting.smk
+        expand(
+            "../results/plots/gc_content_analysis/overview_w={w}_q={q}.pdf",
+            w=aps['w'],
+            q=aps['q'],
+        ),
+
+
+        # Facet plots for seg len distribution using GC = 0.5
+        # Shows canonicity in colors and columns, hash functions in rows.
+        # Hash functions used for this plot are specified via the
+        # hash_function parameter in the config file.
+        expand(
+            "../results/plots/simulated_landscape/q={q}_w={w}_genome=simulated_landscape_vs_prediction.pdf",
+            w=aps['w'],
+            q=aps['q'],
+        ),
+
+
+        # Reduced version of the facet plots for seg len distribution using GC = 0.5
+        # This version uses fewer different hash functions specified via the
+        # hash_function_reduced parameter in the config file.
+        expand(
+            "../results/plots/simulated_landscape_reduced/q={q}_w={w}_genome=simulated_reduced_landscape_vs_prediction.pdf",
+            q=[11, 31],
+            w=[30, 50, 100],
+        ),
+        
+        # Facet plots for REFERENCE genomes, shows behaviour of different
+        # hash functions and canonicity strategies for the same genome.
+        #
+        # Shows canonicity in colors and columns, hash functions in rows.
+        # Each genome is shown in its own set of plots, genomes to plot are selected
+        # via the genome_comp parameter in the config file.
+        # Hash functions used for this plot are specified via the
+        # hash_function parameter in the config file.
+        expand(
+            "../results/plots/genomes_landscape/q={q}_w={w}_genome={genome}_landscape_vs_prediction.pdf",
+            w=aps['w'],
+            q=aps['q'],
+            genome=aps["genome_comp"],
+        ),
+
+
+        # Facet plots showing the behaviour of different hash functions for
+        # for different genomes using the same canonization strategy.
+        # Canonicity is identical per plot, hash functions are shown in columns,
+        # reference genomes are shown in rows.
+        # The analyzed genomes and hash functions are selected via the
+        # genome_comp and genome_comp_hfs parameters respectively.
+        expand(
+            "../results/plots/genomes_comparison/q={q}_w={w}_canon={canonicity}_genome_comparison.pdf",
+            canonicity=["non", "min", "max"],
+            w=aps['w'],
+            q=aps['q'],
+        ),
+
+
+        # Plots comparing the expected to empirically computed distribution of
+        # segment lengths:
+        
+        # A single barchart with predicted values.
+        "../results/plots/distribution/prob_distr_single.pdf",
+
+        # A heatmap for several codomain sizes
+        "../results/plots/distribution/prob_distr_heatmap.pdf",
+
+        # Convergence of predicted distributions with increasing size of the codomain size (C)
+        "../results/plots/distribution/prob_distr_lineplot.pdf",
+
+        # Show differences between increasing hash codomain sizes as line plot
+        "../results/plots/distribution/successive_errors.pdf",
+        
+        # Plot different C values as lines vs. a bar chart of empirirc
+        # distribution values
+        "../results/plots/distribution/errors_vs_empiric.pdf",
+        
+        # Dito, but with a small hash universe used for the empiric values
+        # This is performed by using the special hash function tab-reduced
+        # which uses a hash function codomain size of 30011.
+        "../results/plots/distribution/errors_vs_empiric_reduced.pdf",
+
+
+include: "rules/genome_files.smk"
+include: "rules/aux.smk"
+include: "rules/analysis.smk"
+include: "rules/plotting.smk"

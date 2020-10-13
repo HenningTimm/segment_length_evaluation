@@ -1,0 +1,51 @@
+# This file contains parameters for genome simulation and analysis.
+#
+# Paths to genome files are stored in the file genomes.tsv
+genomes_file: "genomes.tsv"
+
+# Specify output formats.
+formats: ["svg", "pdf"]
+
+# Path to fast memory where intermediary files like
+# simulated genomes and count results are stored.
+tmp_prefix: "intermediate_results"
+
+# Parameters for genome simulation
+synthetic_genomes:
+  nr: 10
+  length: 100_000_000
+  default_gc_content: 0.50
+  gc_content_range: [0.00, 0.25, 0.50, 0.75, 1.00]
+
+
+
+# Parameters for the analysis of segment lengths
+analysis_parameters:
+  # q-gram size
+  q: [11, 16, 17, 31]
+
+  # Winnowing window size
+  w: [30, 50]
+
+  # Size of the hash function codomain used for the comparison with
+  # simulated and reference genomes.
+  # For plots showing a range of different C values, these ranges are
+  # provided in the respective rules.
+  ref_C: 2000000
+
+  # Canonization strategies
+  canonical: ["non", "min", "max"]
+
+  # Hash functions used for simulated genome analysis
+  hash_function: ["2bit", "swap", "mmh3", "inv-mult", "hlin", "tab64simple", "tab64twisted"]
+  # Reduced set for more specific analyses, 
+  hash_function_reduced: ["2bit", "swap", "tab64twisted"]
+
+  # Select which reference genomes from the genomes.tsv file should be analyzed
+  # using their short hand names used in said file.
+  genome_comp: ["mxanthus", "hg38", "hops", "pfalciparum"]
+  # Hash functions used for comparisons with reference genomes.
+  genome_comp_hfs: ["2bit", "mmh3", "tab64twisted"]
+
+
+
