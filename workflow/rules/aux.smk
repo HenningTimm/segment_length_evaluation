@@ -55,15 +55,3 @@ rule generate_distribution_file:
         """
         python ../segdist/segdist.py -w {wildcards.w} -K {wildcards.k} -C {wildcards.C} > {output.distr_file} 2> {output.error_file}
         """
-
-
-# # TODO check if this is still needed
-# rule generate_distribution_mean_and_sum:
-#     output:
-#         stats_file = "../segdist-ng/segment_lengths/prediction_w={w}_k={k}_C={m}.txt",
-#     conda:
-#         "../envs/plot_env.yaml"
-#     shell:
-#         """
-#         python ../aux/segdist-ng/segdist_with_mean.py -w {wildcards.w} -k {wildcards.k} -m {wildcards.C} > {output.stats_file}
-#         """
