@@ -1,0 +1,17 @@
+name: genome_simulation
+version: "0.1"
+about: "Simulates random genomes with a specified GC content and writes them to stdout."
+author: "Henning Timm <henning.timm@tu-dortmund.de>"
+
+
+args:
+  - gc_content:
+      short: g
+      long: "gc-content"
+      default_value: "0.50"
+      help: "GC-Content of the simulated genome."
+  - length:
+      short: l
+      long: "length"
+      default_value: "100000"
+      help: "Length of the simulated genome."
