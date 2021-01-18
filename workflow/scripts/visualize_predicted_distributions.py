@@ -57,6 +57,7 @@ def visualize_distributions():
 
     sns.set(font="DejaVu Sans")
     fig, ax = plt.subplots(figsize=(14, 10))
+    # Use a logarithmic color scale, very loosely following:
     # https://stackoverflow.com/questions/36898008/seaborn-heatmap-with-logarithmic-scale-colorbar
     sns.heatmap(
         pivoted,
